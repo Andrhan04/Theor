@@ -1,6 +1,6 @@
 import statistics as st
 from Function import Laplas
-
+from math import sqrt
 # Задание 5. По данным выборки, удовлетворяющей нормальному закону
 # распределения со средним квадратическим отклонением S , вычислить:
 # 1) выборочное среднее;
@@ -8,5 +8,5 @@ from Function import Laplas
 def main(data, y, s):
     x = st.mean(data) 
     print(x)
-    Gran = Laplas.GetParm(y/2)
+    Gran = Laplas.GetParm(y/2) * s / sqrt(len(data))
     print("({:.3f};{:.3f})".format(x-Gran,x+Gran))
