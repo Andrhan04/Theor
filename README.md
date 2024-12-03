@@ -3,3 +3,5 @@
 Function функции для заданий
 
 Task задания
+
+https://python-docs.ru/library/statistics - python документация
