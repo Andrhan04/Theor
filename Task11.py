@@ -9,7 +9,8 @@
     3) критическое значение;
     4) вывод о принятии или не принятии гипотезы.
 '''
-
+from collections import Counter
+from Function.my_methods import chi_critical, chi_obvervable
 data = [21.8, 2.4, 13.8, 7.0, 21.8, 19.2, 14.9, 20.5, 18.2, 16.3, 16.8, 16.4,
         17.6, 30.2, 0.2, 22.6, 12.8, 4.6, 8.5, 15.6, 16.8, 27.7, 11.2, 5.2, 14.0,
         12.7, 7.1, 15.0, 13.4, 14.6, 11.1, 9.6, 12.1, 1.1, 20.9, 16.1, 10.6,
@@ -21,5 +22,37 @@ data = [21.8, 2.4, 13.8, 7.0, 21.8, 19.2, 14.9, 20.5, 18.2, 16.3, 16.8, 16.4,
 alpha = 0.025
 
 
-def main(data,alpha = 0.025):
-    pass
+
+def main(data = data, alpha = 0.025):
+    counter = Counter(sorted(data))
+    data_x = list(counter.keys())
+    data_p = list(counter.values())
+
+    n = len(data)
+    chi_obver = chi_obvervable(data_p, data_x, alpha)
+    
+    k_exp = n - 2
+    k_norm = n - 3
+    k_even = n - 3 
+    
+    chi_crit_exp = chi_critical(k_exp, alpha)
+    chi_crit_norm = chi_critical(k_norm, alpha)
+    chi_crit_even = chi_critical(k_even, alpha)
+    
+    print(f"показательная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_exp:.3f}")
+    if chi_crit_exp < chi_obver:
+        print("гипотеза отвергнута ")
+    else:
+        print("нет оснований отвергать!")
+    print(f"нормальная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_norm:.3f}")
+    if chi_crit_norm < chi_obver:
+        print("гипотеза отвергнута ")
+    else:
+        print("нет оснований отвергать!")
+    print(f"равномерная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_even:.3f}")
+    if chi_crit_even < chi_obver:
+        print("гипотеза отвергнута ")
+    else:
+        print("нет оснований отвергать!")
+    
+    
