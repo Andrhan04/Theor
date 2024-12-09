@@ -67,7 +67,7 @@ data = {0.00:	0.0000,	0.48:	0.1844, 0.96:	0.3315,	1.44:	0.4251, 1.92:	0.4726,
 
 
 def GetParm(y):
-    for key,val in data:
+    for key,val in data.items():
         if(val == y):
             return key
     return -1

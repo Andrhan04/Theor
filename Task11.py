@@ -55,4 +55,4 @@ def main(data = data, alpha = 0.025):
     else:
         print("нет оснований отвергать!")
     
-    
+main()

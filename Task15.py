@@ -8,15 +8,10 @@
 2) критическое значение;
 3) вывод о принятии или не принятии гипотезы.
 '''
-
-alpha = 0.06 
-n1 = 500
-m1 = 375
-n2 = 900
-m2 = 557
 from math import sqrt
 from Function.Laplas import GetParm
-def main():
+
+def main(n1 = 500, m1 = 375, n2 = 900, m2 = 557, alpha = 0.06):
     p1 = m1/n1
     p2 = m2/n2
     p = (m1+m2)/(n1+n2)
@@ -26,3 +21,5 @@ def main():
          print("– нет оснований отвергнуть гипотезу")
     else:
         print("– гипотезу отвергают.")
+
+main()

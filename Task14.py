@@ -30,7 +30,7 @@ y = [99.1, 19.4, 97.0, 62.7, 12.2, 11.9, 57.9, 114.3, 92.8, 63.9, 22.5, 92.0, 13
 import statistics as st
 from math import sqrt
 from Function import t_crit as Table
-def main(data_x,data_y, alpha):
+def main(data_x = x,data_y = y, alpha = 0.01):
     X = st.mean(data_x)
     Sx = sqrt(st.variance(data_x,X))
     Y = st.mean(data_y)
@@ -44,3 +44,6 @@ def main(data_x,data_y, alpha):
          print("– нет оснований отвергнуть гипотезу")
     else:
         print("– гипотезу отвергают.")
+
+
+main()
