@@ -3,7 +3,7 @@ from Function import Interval
 from Function import Gistogramm
 from Function import FuncDistribution
 from Function import GrafFuncDistr
-from Task2 import MainCheracter
+from Function import MainCheracter
 
 # Задание 2. Каждому студенту в соответствии со своим номером варианта
 # требуется:

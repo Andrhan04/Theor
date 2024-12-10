@@ -3,36 +3,28 @@
 Используя метод наименьших квадратов, найти уравнение прямой по экспериментальным данным, и построить эту прямую. 
 Сравнить полученный результат с результатом расчета в пакете «Анализ данных».
 '''
-from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
+from Function.my_methods import regression_equationYX
 
-def mapping(values_x, a, b):     
-    return a*values_x + b
+X = np.array([-5, -4, -2, 0, 1, 2, 4, 6, 8, 9])
+Y = np.array([-24, -18, -9, 1, 7, 13, 21, 32, 41, 46])
 
-xdata = [-2, -1, 0, 1, 4, 5, 6, 7, 8, 10]
-ydata = [-8, -5, -3, 1, 10, 15, 16, 20, 22, 26]
+def main():
+    a, b = regression_equationYX(X, Y)#используя свой метод
 
-args, covar = curve_fit(mapping, xdata, ydata) 
-a=args[0]
-b=args[1]
-print(a,b)
+    print(f"Уравнение прямой своим методом: y = {a:.4f}x + {b:.4f}")
+    slope_Y_on_X, intercept_Y_on_X = np.polyfit(X, Y, 1)
 
-yint=[]
-for x in xdata:
-    yint.append(mapping(x,a,b))
 
-so = 0
-for i in range(len(ydata)):
-    if(ydata[i] !=0):
-        so += abs(yint[i]-ydata[i])/ydata[i]
-so = so / (len(ydata)) * 100
-so = round(so,3)
-print(so)
+    print(f"Уравнение c помощью готовых методов: Y = {slope_Y_on_X:.4f}  X + {intercept_Y_on_X:.4f}")
 
-plt.figure()
-plt.plot(xdata, ydata, color='b', label='Data')
-plt.plot(xdata, yint, color='r', linestyle='dashed', label='Aproxim')
-plt.title("Выжившие частицы")
-plt.legend()
-plt.show()
+    plt.scatter(X, Y, color='blue', label='Экспериментальные данные')
+    plt.plot(X, a * X + b, color='red', label='Уравнение прямой')
+    plt.plot(X, float(slope_Y_on_X) * X + float(intercept_Y_on_X), color='green', label='Уравнение прямой готовым методом')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('Построение уравнения прямой методом наименьших квадратов')
+    plt.legend()
+    plt.grid()
+    plt.show()
