@@ -7,8 +7,8 @@ alpha = 0,05.
 from Function.my_methods import  chi_critical, chi_obvervable
 
 
-p = [3, 10, 31, 57, 88, 75, 47, 30, 9, 2]
-def main(data_p = p ,x_min = 2.4, h = 1.4, alpha= 0.1):
+p = [5, 7, 21, 66, 84, 90, 70, 20, 5, 3]
+def main(data_p = p ,x_min = 10.1, h = 2.0, alpha= 0.1):
 
     data_x = [round(x_min + h*i,1) for i in range(len(data_p))]
     k = len(data_p) - 3

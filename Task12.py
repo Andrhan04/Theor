@@ -11,7 +11,11 @@
 import statistics as st
 from Function import Fisher
 
-def main(data_x, data_y, alpha):
+alpha = 0.1
+x = [32.9, 55.5, 56.2, 43.1, 32.0, 47.3, 46.6, 33.8, 32.6]
+y = [21.8, 39.4, 44.5, 51.9, 45.3, 8.7, 67.4, 33.1, 28.4]
+
+def main(data_x = x, data_y = y, alpha = 0.1):
     print(len(data_x),len(data_y))
     print(D_x:=st.variance(data_x))
     print(D_y:=st.variance(data_y))
@@ -28,3 +32,5 @@ def main(data_x, data_y, alpha):
         print("– нет оснований отвергнуть гипотезу")
     else:
         print("– гипотезу отвергают.")
+
+main()

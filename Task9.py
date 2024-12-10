@@ -9,9 +9,9 @@ alpha = 0,05.
 '''
 from Function.my_methods import chi_critical, chi_obvervable
 
-p = [156, 101, 57, 32, 14, 9, 11, 1, 2, 1, 1]
+p = [206, 98, 64, 29, 14, 5, 3, 1, 0, 1, 1]
 
-def main(data_p = p ,x_min = 0, h = 0.2, alpha= 0.05):
+def main(data_p = p ,x_min = 0, h = 1.8 , alpha= 0.05):
 
     data_x = [round(x_min + h*i,1) for i in range(len(data_p))]
     k = len(data_p) - 2

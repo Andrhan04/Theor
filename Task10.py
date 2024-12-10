@@ -4,7 +4,7 @@
 # проверить гипотезу: закон распределения генеральной совокупности является равномерным при уровне значимости
 # alpha = 0,05
 import scipy.stats as st
-
+from Function import Help
 def main(data, alpha):
     stat, p_val = st.chisquare(data)
     # P-value – это минимальный уровень значимости, на котором нулевая гипотеза может быть отвергнута. 
@@ -17,3 +17,10 @@ def main(data, alpha):
         print('Принять гипотезу')
     else:
         print('Отклонить гипотезу')
+
+
+data_p = [42, 42, 46, 42, 46, 40, 37, 50, 37, 34]
+data_x = []
+for h in range(len(data_p)):
+    data_x.append(round(1.8 + 1.8*h,3))
+main(Help.GetData(data_x,data_p),alpha = 0.1)

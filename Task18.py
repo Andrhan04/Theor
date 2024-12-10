@@ -7,8 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Function.my_methods import regression_equationYX
 
-X = np.array([-5, -4, -2, 0, 1, 2, 4, 6, 8, 9])
-Y = np.array([-24, -18, -9, 1, 7, 13, 21, 32, 41, 46])
+X = np.array([-2,-1,0, 1, 4, 5,6, 7, 8, 10])
+Y = np.array([-8, -5, -3, 1, 10, 15, 16, 20, 22, 26])
 
 def main():
     a, b = regression_equationYX(X, Y)#используя свой метод

@@ -10,8 +10,8 @@ from numpy.linalg import inv
 from Function.my_methods import regression_equationYX, coeff_correlation
 
 np.random.seed(0)  
-x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-y = np.array([0.1, 1.5, 2.8, 8.2, 20.2, 55.4, 127.5, 223, 497.6, 980])
+x = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0])
+y = np.array([1.1, 2.6, 2.7, 3.0, 4.1, 4.6, 4.7, 3.4, 4.8, 5.1, 5.7, 5.2, 5.6])
 
 # Метод для линейной зависимости
 def linear_fit(x, y):
