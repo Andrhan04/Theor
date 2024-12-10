@@ -21,7 +21,7 @@ def main(data = data, alpha = 0.025):
     data_p = list(counter.values())
 
     n = len(data)
-    chi_obver = chi_obvervable(data_p, data_x, alpha)
+    chi_obver = chi_obvervable(data_p, data_x)[0]
     
     k_exp = n - 2
     k_norm = n - 3

@@ -10,6 +10,7 @@
 import statistics
 from scipy.stats import chi2_contingency
 import pandas as pd
+from my_methods import chi_critical, chi_obvervable
 
 data = {
     'x' : [6, 5, 4, 3, 2 ,1],
@@ -24,7 +25,8 @@ df = pd.DataFrame(data)
 contingency_table = pd.crosstab(df['x'], df['p'])
 print(contingency_table)
 
-chi2, p, dof, expected = chi2_contingency(contingency_table)
+chi2, p, dof = chi_obvervable(data_p=data['p'], data_x=data['x'])
+
 print(f"x: {chi2}, p-значение: {p}")
 
 if p >= alpha: 

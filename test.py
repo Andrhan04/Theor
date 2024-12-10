@@ -1,75 +1,33 @@
-from scipy.optimize import curve_fit
 import numpy as np
-import matplotlib.pyplot as plt
+from scipy.stats import chi2
 
-def mapping(values_x, a, b):     
-    return a*values_x + b
+def chi2_contingency_manual(observed):
+    # Преобразуем входные данные в numpy-массив
+    observed = np.array(observed)
+    
+    # Сумма по строкам и столбцам
+    row_sums = observed.sum(axis=1)
+    col_sums = observed.sum(axis=0)
+    total = observed.sum()
+    
+    # Вычисление ожидаемых значений
+    expected = np.outer(row_sums, col_sums) / total
+    
+    # Вычисление статистики χ²
+    chi2_stat = ((observed - expected) ** 2 / expected).sum()
+    
+    # Число степеней свободы
+    degrees_of_freedom = (observed.shape[0] - 1) * (observed.shape[1] - 1)
+    
+    # Вычисление p-значения
+    p_value = chi2.cdf(chi2_stat, degrees_of_freedom)
+    
+    return chi2_stat, p_value, degrees_of_freedom
 
-def mapping_sq(values_x, a, b, c):     
-    return a*(values_x**2) + b*(values_x) + c
+# Пример использования
+observed_data = [[6, 5, 4, 3, 2 ,1], [24, 19, 22, 22, 17, 16]]
 
-def mapping_p(values_x, a):
-    return a**values_x
-
-xdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-ydata = [0.1, 1.5, 2.8, 8.2, 20.2, 55.4, 127.5, 223, 497.6, 980]
-
-plt.figure()
-plt.plot(xdata, ydata, color='b', label='Data')
-
-args, covar = curve_fit(mapping, xdata, ydata) 
-a=args[0]
-b=args[1]
-print(a,b)
-
-yint=[]
-for x in xdata:
-    yint.append(mapping(x,a,b))
-
-so = 0
-for i in range(len(ydata)):
-    if(ydata[i] !=0):
-        so += abs(yint[i]-ydata[i])/ydata[i]
-so = so / (len(ydata)) * 100
-so = round(so,3)
-print(so)
-plt.plot(xdata, yint, color='r', linestyle='dashed', label='Linear')
-#-----------------------------------------------------------------------------
-args, covar = curve_fit(mapping_sq, xdata, ydata) 
-a=args[0]
-b=args[1]
-c = args[2]
-print(a,b,c)
-
-yint=[]
-for x in xdata:
-    yint.append(mapping_sq(x,a,b,c))
-
-so = 0
-for i in range(len(ydata)):
-    if(ydata[i] !=0):
-        so += abs(yint[i]-ydata[i])/ydata[i]
-so = so / (len(ydata)) * 100
-so = round(so,3)
-print(so)
-plt.plot(xdata, yint, color='g', linestyle='dashed', label='Squeare')
-#-----------------------------------------------------------------------------------------
-args, covar = curve_fit(mapping_p, xdata, ydata) 
-a=args[0]
-print('----')
-print(a)
-
-yint=[]
-for x in xdata:
-    yint.append(mapping_p(x,a))
-
-so = 0
-for i in range(len(ydata)):
-    if(ydata[i] !=0):
-        so += abs(yint[i]-ydata[i])/ydata[i]
-so = so / (len(ydata)) * 100
-so = round(so,3)
-print(so)
-plt.plot(xdata, yint, color='black', linestyle='dashed', label='Squeare')
-
-plt.show()
+chi2_statistic, p_value, dof = chi2_contingency_manual(observed_data)
+print(f"χ² статистика: {chi2_statistic:.4f}")
+print(f"p-значение: {p_value:.4f}")
+print(f"Степени свободы: {dof}")

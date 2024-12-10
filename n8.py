@@ -23,8 +23,9 @@ data_x = [round(x_min + h*i,1) for i in range(len(data_p))]
 k = len(data_p) - 3
 
 ch = chi_critical(k, alpha)
-chi_obs = chi_obvervable(data_p, data_x, alpha)
+chi_obs = chi_obvervable(data_p, data_x)[0]
 print(ch)
+print(chi_obs)
 
 if ch > chi_obs:
     print("гипотеза отвергнута ")
