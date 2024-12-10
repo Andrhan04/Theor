@@ -29,7 +29,7 @@ def main(data = data, alpha = 0.025):
 
     n = len(data)
     chi_obver = chi_obvervable(data_p, data_x, alpha)
-    
+
     k_exp = n - 2
     k_norm = n - 3
     k_even = n - 3 

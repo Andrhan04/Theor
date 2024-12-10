@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
-
+from Task11 import main as Distr
 data = np.array([9192, 9161, 9162, 9163, 9128, 9114, 9113, 9126, 9127, 9115, 9122,
                 9111, 9121, 9137, 9112, 9064, 9074, 9072, 9073, 9098, 9086, 9088,
                 9099, 9096, 9097, 9125, 9036, 9034, 9033, 9028])
@@ -20,12 +20,12 @@ def main(data = data):
     print(f'Выборочное среднеквадратическое отклонение: {std_dev_estimate:.2f}')
 
     # 2. Составить группированный вариационный ряд
-    bins = np.arange(100, 1200, 100)  # Определяем границы классов
+    bins = np.arange(min(data), max(data)+1, (max(data)-min(data))/len(data))  # Определяем границы классов
     hist, edges = np.histogram(data, bins=bins)
 
     # Создаем DataFrame для вариационного ряда
     variational_series = pd.DataFrame({
-        'Границы классов': [f"{edges[i]} - {edges[i+1]}" for i in range(len(edges)-1)],
+        'Границы классов': [f"{edges[i]:.3f} - {edges[i+1]:.3f}" for i in range(len(edges)-1)],
         'Частоты': hist,
         'Относительные частоты': hist / len(data)
     })
@@ -50,7 +50,7 @@ def main(data = data):
     plt.show()
 
     # 4. Построить график теоретической плотности вероятностей
-    x = np.linspace(100, 1100, 100)
+    x = np.linspace(int(min(data)), int(max(data)+1), int((max(data)-min(data))/len(data)))
     pdf = stats.norm.pdf(x, mean_estimate, std_dev_estimate)
 
     plt.figure(figsize=(12, 6))
@@ -91,20 +91,10 @@ def main(data = data):
 
     # 7. Проверка гипотезы о виде распределения с помощью критерия χ²
     # Подсчет ожидаемых частот для критерия Хи-квадрат
-    expected_freq = stats.norm.pdf(mid_points, mean_estimate, std_dev_estimate) * len(data)
-
+    # expected_freq = stats.norm.pdf(mid_points, mean_estimate, std_dev_estimate) * len(data)
+    # print(expected_freq)
     # Расчет критерия Хи-квадрат
-    chi_square_stat = np.sum((hist - expected_freq) ** 2 / expected_freq)
-    df = len(mid_points) - 1 - 2  # количество классов - 1 - количество оцененных параметров
-    alpha = 0.1
-    critical_value = stats.chi2.ppf(1 - alpha, df)
-
-    print(f'Статистика Хи-квадрат: {chi_square_stat:.2f}, Критическое значение: {critical_value:.2f}')
-
-    if chi_square_stat > critical_value:
-        print("Отвергаем H0: распределение не нормальное")
-    else:
-        print("Не отвергаем H0: распределение может быть нормальным")
+    Distr(data, 0.1)
 
     # 8. Построение доверительных интервалов
     def confidence_interval(mean, std_dev, n, alpha):
@@ -118,3 +108,6 @@ def main(data = data):
     for alpha in alpha_levels:
         lower, upper = confidence_interval(mean_estimate, std_dev_estimate, n, alpha)
         print(f'Доверительный интервал для α={alpha}: ({lower:.2f}, {upper:.2f})')
+
+
+main()

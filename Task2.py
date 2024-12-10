@@ -39,3 +39,5 @@ def main():
     GrafFuncDistr.main(data)
     print("p6")
     MainCheracter.main(data)
+
+main()

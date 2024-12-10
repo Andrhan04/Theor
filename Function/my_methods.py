@@ -71,7 +71,7 @@ def chi_obvervable(data_p, data_x, alpha):
     a_ = X - sqrt(3)*delta
     b_ = X + sqrt(3)*delta
 
-    fx = 1 / fabs(a_ - b_)
+    fx = 1 / abs(a_ - b_)
     
     n = [None] * len(data_p)
     

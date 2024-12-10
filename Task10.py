@@ -3,24 +3,22 @@
 # (начальное значениеmin x, шаг h) 
 # проверить гипотезу: закон распределения генеральной совокупности является равномерным при уровне значимости
 # alpha = 0,05
-import scipy.stats as st
-from Function import Help
-def main(data, alpha):
-    stat, p_val = st.chisquare(data)
-    # P-value – это минимальный уровень значимости, на котором нулевая гипотеза может быть отвергнута. 
-    # Соответственно, 
-    #   если p−value меньше нашего фиксированного уровня значимости, на котором мы проверяем гипотезу, 
-    #          то нулевую гипотезу следует отвергнуть,
-    #    если более – то отвергать нулевую гипотезу оснований нет.
-    print(stat,p_val)    
-    if p_val > alpha:
-        print('Принять гипотезу')
+from Function.my_methods import chi_critical, chi_obvervable
+
+p = [42, 42, 46, 42, 46, 40, 37, 50, 37, 34]
+
+
+def main(data_p = p ,x_min = 1.8, h = 1.8 , alpha= 0.05):
+
+    data_x = [round(x_min + h*i,1) for i in range(len(data_p))]
+    k = len(data_p) - 2
+    ch = chi_critical(k, alpha)
+    chi_obs = chi_obvervable(data_p=data_p, data_x=data_x, alpha=alpha)
+    print(ch)
+    if ch > chi_obs:
+        print("гипотеза отвергнута ")
     else:
-        print('Отклонить гипотезу')
+        print("нет оснований отвергать!")
 
 
-data_p = [42, 42, 46, 42, 46, 40, 37, 50, 37, 34]
-data_x = []
-for h in range(len(data_p)):
-    data_x.append(round(1.8 + 1.8*h,3))
-main(Help.GetData(data_x,data_p),alpha = 0.1)
+main()

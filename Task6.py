@@ -16,3 +16,5 @@ def main(data = data):
     print(f'{X:.5f}')
     print(f'{delta:.5f}')
     print(f'границы довер. инервала: {X-delta:.5f}; {X+delta:.5f}')
+    
+main()

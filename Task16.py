@@ -30,13 +30,10 @@ def main(X=X, Y=Y):
     else:
         print(f"Коэффициент корреляции не значим на уровне α = {alpha}")
 
-
     # Регрессия Y на X
     slope_Y_on_X, intercept_Y_on_X = regression_equationYX(X, Y)
     # Регрессия X на Y
     slope_X_on_Y, intercept_X_on_Y = regression_equationYX(Y, X)
-
-
 
     print(f"Уравнение регрессии Y на X: Y = {slope_Y_on_X:.4f}  X + {intercept_Y_on_X:.4f}")
     print(f"Уравнение регрессии X на Y: X = {slope_X_on_Y:.4f}  Y + {intercept_X_on_Y:.4f}")
@@ -53,3 +50,4 @@ def main(X=X, Y=Y):
     plt.grid()
     plt.show()
     
+main()

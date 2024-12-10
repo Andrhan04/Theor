@@ -77,3 +77,5 @@ def main(x=x, y=y):
     plt.legend()
     plt.grid()
     plt.show()
+
+main()

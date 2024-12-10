@@ -4,9 +4,6 @@
 критерия Пирсона проверить, согласуется ли этот результат с утверждением, что
 кость правильная? Принять alpha = 0,05.
 '''
-
-
-
 import statistics
 from scipy.stats import chi2_contingency
 import pandas as pd

@@ -26,3 +26,5 @@ def main(data = data, y=0.99):
     q = 0.66 # В табличке значений функции q = q(y,n) 
 
     print("({:.3f};{:.3f})".format(x*(1-q),x*(1+q)))
+
+main()

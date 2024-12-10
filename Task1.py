@@ -25,3 +25,5 @@ def main():
     FuncDistribution.main(data)
     print("p5")
     GrafFuncDistr.main(data)
+
+main()
