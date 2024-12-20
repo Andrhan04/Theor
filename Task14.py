@@ -30,25 +30,36 @@ y = [99.1, 19.4, 97.0, 62.7, 12.2, 11.9, 57.9, 114.3, 92.8, 63.9, 22.5, 92.0, 13
 import statistics as st
 from math import sqrt
 from Function import t_crit as Table
+import scipy.stats as stats
 def main(data_x = x,data_y = y, alpha = 0.01):
-    X = st.mean(data_x)
-    print(X)
-    Sx = sqrt(st.variance(data_x,X))
-    Y = st.mean(data_y)
-    print(Y)
-    Sy = sqrt(st.variance(data_y,Y))
-    nx = len(data_x)
-    ny = len(data_y)
-    S = sqrt( ((nx-1)*Sx + (ny-1)*Sy)/(nx + ny - 2) )
-    t = (X - Y)/(S * sqrt(1/nx + 1/ny))
-    print(t)
-    t_crit = Table.getVal(alpha/2,nx+ny-2)
-    print(t_crit)
-    print((nx + ny - 2))
-    if abs(t) < t_crit:
-         print("– нет оснований отвергнуть гипотезу")
+    # X = st.mean(data_x)
+    # print(X)
+    # Sx = sqrt(st.variance(data_x,X))
+    # Y = st.mean(data_y)
+    # print(Y)
+    # Sy = sqrt(st.variance(data_y,Y))
+    # nx = len(data_x)
+    # ny = len(data_y)
+    # S = sqrt( ((nx-1)*Sx + (ny-1)*Sy)/(nx + ny - 2) )
+    # t = (X - Y)/(S * sqrt(1/nx + 1/ny))
+    # print(t)
+    # t_crit = 0.136
+    # print(t_crit)
+    # print((nx + ny - 2))
+    # if abs(t) < t_crit:
+    #      print("– нет оснований отвергнуть гипотезу")
+    # else:
+    #     print("– гипотезу отвергают.")
+    stata, p_val = stats.ttest_ind(a=data_x, b=data_y, equal_var=True)
+    print(stata)
+    print(p_val)
+    if p_val > alpha:
+        print("– нет оснований отвергнуть гипотезу")
     else:
         print("– гипотезу отвергают.")
+
+
+
 
 
 main()
