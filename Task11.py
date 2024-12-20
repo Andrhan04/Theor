@@ -11,6 +11,9 @@
 '''
 from collections import Counter
 from Function.my_methods import chi_critical, chi_obvervable
+import numpy as np
+import scipy.stats as stats
+# Данные выборки
 data = [21.8, 2.4, 13.8, 7.0, 21.8, 19.2, 14.9, 20.5, 18.2, 16.3, 16.8, 16.4,
         17.6, 30.2, 0.2, 22.6, 12.8, 4.6, 8.5, 15.6, 16.8, 27.7, 11.2, 5.2, 14.0,
         12.7, 7.1, 15.0, 13.4, 14.6, 11.1, 9.6, 12.1, 1.1, 20.9, 16.1, 10.6,
@@ -21,37 +24,83 @@ data = [21.8, 2.4, 13.8, 7.0, 21.8, 19.2, 14.9, 20.5, 18.2, 16.3, 16.8, 16.4,
         9.5, 14.6, 16.4, 14.6, 13.3, 13.1, 15.8, 20.5, 6.4, 24.7, 7.6, 9.1, 11.1]
 
 
+# Далее приводим пример для каждой гипотезы
 
-def main(data = data, alpha = 0.025):
-    counter = Counter(sorted(data))
-    data_x = list(counter.keys())
-    data_p = list(counter.values())
+alpha = 0.05  # уровень значимости
 
-    n = len(data)
-    chi_obver = chi_obvervable(data_p, data_x, alpha)
+# 1. Проверка на показательное распределение
+def test_exponential(data):
+    # Определим параметр λ
+    lambda_param = 1 / np.mean(data)
+    # Определение интервального распределения
+    bins = np.histogram_bin_edges(data, bins='auto')
+    observed_freq, _ = np.histogram(data, bins=bins)
+    # Теоретические частоты для показательного распределения
+    expected_freq = len(data) * (np.diff(bins) * lambda_param * np.exp(-lambda_param * bins[:-1]))
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
+    # Степени свободы: количество интервалов - 1
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
+    
+    print(f'Показательное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    if(chi_squared > critical_value):
+        print('гипотеза отклоняется')
+    else:
+        print('нет оснований отвергать гипотезу ')
+    return chi_squared, critical_value, chi_squared > critical_value
 
-    k_exp = n - 2
-    k_norm = n - 3
-    k_even = n - 3 
+# 2. Проверка на равномерное распределение
+def test_uniform(data):
+    # Определение диапазона данных
+    min_val, max_val = np.min(data), np.max(data)
+    bins = np.linspace(min_val, max_val, 6)  # 5 интервалов для равномерного распределения
+    observed_freq, _ = np.histogram(data, bins=bins)
     
-    chi_crit_exp = chi_critical(k_exp, alpha)
-    chi_crit_norm = chi_critical(k_norm, alpha)
-    chi_crit_even = chi_critical(k_even, alpha)
+    # Теоретические частоты для равномерного распределения
+    expected_freq = len(data) / len(observed_freq) * np.ones_like(observed_freq)
+
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
     
-    print(f"показательная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_exp:.3f}")
-    if chi_crit_exp < chi_obver:
-        print("гипотеза отвергнута ")
-    else:
-        print("нет оснований отвергать!")
-    print(f"нормальная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_norm:.3f}")
-    if chi_crit_norm < chi_obver:
-        print("гипотеза отвергнута ")
-    else:
-        print("нет оснований отвергать!")
-    print(f"равномерная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_even:.3f}")
-    if chi_crit_even < chi_obver:
-        print("гипотеза отвергнута ")
-    else:
-        print("нет оснований отвергать!")
+    # Степени свободы
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
     
-main()
+    print(f'Равномерное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    if(chi_squared > critical_value):
+        print('гипотеза отклоняется')
+    else:
+        print('нет оснований отвергать гипотезу ')
+    return chi_squared, critical_value, chi_squared > critical_value
+
+# 3. Проверка на нормальное распределение
+def test_normal(data):
+    # Определение параметров нормального распределения
+    mu, sigma = np.mean(data), np.std(data)
+    
+    # Определение интервального распределения
+    bins = np.histogram_bin_edges(data, bins='auto')
+    observed_freq, _ = np.histogram(data, bins=bins)
+    
+    # Теоретические частоты для нормального распределения
+    expected_freq = len(data) * (stats.norm.cdf(bins[1:], mu, sigma) - stats.norm.cdf(bins[:-1], mu, sigma))
+
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
+    
+    # Степени свободы
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
+    
+    print(f'Нормальное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    if(chi_squared > critical_value):
+        print('гипотеза отклоняется')
+    else:
+        print('нет оснований отвергать гипотезу ')
+    return chi_squared, critical_value, chi_squared > critical_value
+
+# Запуск тестов
+test_exponential(data)
+test_uniform(data)
+test_normal(data)
