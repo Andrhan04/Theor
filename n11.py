@@ -1,10 +1,10 @@
-from collections import Counter
-from my_methods import chi_critical, chi_obvervable
-import numpy as np
-from scipy.stats import chi2_contingency, norm
-from math import sqrt
 
-data = [
+
+import numpy as np
+import scipy.stats as stats
+
+# Данные выборки
+data = np.array([
     35.1, 46.7, 23.9, 50.5, 32.3, 32.5, 32.7, 21.5, 33.1, 34.0, 42.4, 53.6,
     34.8, 18.7, 25.7, 29.1, 18.4, 38.8, 23.6, 19.5, 22.7, 26.8, 54.1, 47.4,
     42.0, 24.0, 35.9, 58.1, 45.1, 5.8, 27.6, 25.4, 40.8, 41.5, 18.3, 36.5,
@@ -14,82 +14,77 @@ data = [
     16.2, 36.8, 33.5, 31.6, 23.0, 46.6, 18.7, 30.4, 29.4, 21.8, 36.1, 34.2,
     39.5, 32.9, 33.5, 24.1, 6.0, 17.8, 21.1, 42.6, 30.4, 29.1, 52.3, 37.4,
     39.9, 39.1, 37.5, 41.6
-]
+])
 
-'''
-По данным выборки проверить с помощью критерия Пирсона
-при уровне значимости α гипотезу:
-а) о показательном;
-б) равномерном;
-в) нормальном законе распределения генеральной совокупности.
-В ответе привести:
-1) выбранную гипотезу о виде закона распределения;
-2) вычисленное значение критерия;
-3) критическое значение;
-4) вывод о принятии или не принятии гипотезы
-'''
+# Далее приводим пример для каждой гипотезы
 
-def main(data = data, alpha = 0.025):
-    a = [[]]
-    q = [0] * 10
-    data = sorted(data)
-    counter = Counter(sorted(data))
-    data_x = list(counter.keys())
-    data_p = list(counter.values())
-    r = max(data) - min(data)
-    print(r)
-    h = r/10
-    print(h)
-    intervals = [[min(data) + r/10*i, min(data) + r/10*(i+1)] for i in range(10)]
-    intervals[-1][1] = intervals[-1][1] + 0.005
-    print(intervals)
-    for i in data:
-        for j in range(len(intervals)):
-            if intervals[j][0] <= i < intervals[j][1]:
-                q[j] += 1
-                break
-    intervals[0] = [5.8, 21.49]
-    intervals.pop(2)
-    intervals.pop(1)
-    q[0] = 13
-    q.pop(2)
-    q.pop(1)
-    intervals[-1] = [47.64, 58.105]
-    intervals.pop(-2)
-    q[-1] = 7
-    q.pop(-2)
-    for i in range(len(q)):
-        print(intervals[i], q[i])
-    X = sum(list(map(lambda x,y: (x[0]+x[1])*y/2, intervals, q))) / sum(q)
-    D = sum(list(map(lambda x,y: (x[0]+x[1])*(x[0]+x[1])*y/4, intervals, q))) / sum(q) - X*X
-    sigma = sqrt(D)
-    print(X, D, sigma)
+alpha = 0.05  # уровень значимости
+
+# 1. Проверка на показательное распределение
+def test_exponential(data):
+    # Определим параметр λ
+    lambda_param = 1 / np.mean(data)
     
-    a = X - sqrt(3) * sigma
-    b = X + sqrt(3) * sigma
-    print(a, b)
-    fx = 1/(b-a)
+    # Определение интервального распределения
+    bins = np.histogram_bin_edges(data, bins='auto')
+    observed_freq, _ = np.histogram(data, bins=bins)
     
-    n = [0] * 7
+    # Теоретические частоты для показательного распределения
+    expected_freq = len(data) * (np.diff(bins) * lambda_param * np.exp(-lambda_param * bins[:-1]))
+
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
     
-    n[0] = sum(q) * (intervals[0][1] - a) * fx
+    # Степени свободы: количество интервалов - 1
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
     
-    for i in range(1, 6):
-        n[i] = sum(q) * (intervals[i][1] - intervals[i][0]) * fx
-        
-    n[-1] = sum(q) * (b - intervals[-1][0]) *fx
+    print(f'Показательное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    return chi_squared, critical_value, chi_squared > critical_value
+
+# 2. Проверка на равномерное распределение
+def test_uniform(data):
+    # Определение диапазона данных
+    min_val, max_val = np.min(data), np.max(data)
+    bins = np.linspace(min_val, max_val, 6)  # 5 интервалов для равномерного распределения
+    observed_freq, _ = np.histogram(data, bins=bins)
     
-    print(n)
+    # Теоретические частоты для равномерного распределения
+    expected_freq = len(data) / len(observed_freq) * np.ones_like(observed_freq)
+
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
     
-    for i in range(len(q)):
-        print(intervals[i], q[i])
+    # Степени свободы
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
     
-    s1 = sum(list(map(lambda x, y: (x-y)*(x-y) / y, q, n)))
-    chi2_crit = chi_critical(len(n) -2 , alpha=alpha)
+    print(f'Равномерное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    return chi_squared, critical_value, chi_squared > critical_value
+
+# 3. Проверка на нормальное распределение
+def test_normal(data):
+    # Определение параметров нормального распределения
+    mu, sigma = np.mean(data), np.std(data)
     
+    # Определение интервального распределения
+    bins = np.histogram_bin_edges(data, bins='auto')
+    observed_freq, _ = np.histogram(data, bins=bins)
     
+    # Теоретические частоты для нормального распределения
+    expected_freq = len(data) * (stats.norm.cdf(bins[1:], mu, sigma) - stats.norm.cdf(bins[:-1], mu, sigma))
+
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
     
+    # Степени свободы
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
     
-    print(s1, chi2_crit)
-if __name__ == '__main__':
-    main()
+    print(f'Нормальное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    return chi_squared, critical_value, chi_squared > critical_value
+
+# Запуск тестов
+test_exponential(data)
+test_uniform(data)
+test_normal(data)
