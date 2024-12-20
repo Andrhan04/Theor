@@ -32,11 +32,11 @@ from math import sqrt
 from Function import t_crit as Table
 import scipy.stats as stats
 def main(data_x = x,data_y = y, alpha = 0.01):
-    # X = st.mean(data_x)
-    # print(X)
+    X = st.mean(data_x)
+    print(X)
+    Y = st.mean(data_y)
+    print(Y)
     # Sx = sqrt(st.variance(data_x,X))
-    # Y = st.mean(data_y)
-    # print(Y)
     # Sy = sqrt(st.variance(data_y,Y))
     # nx = len(data_x)
     # ny = len(data_y)
