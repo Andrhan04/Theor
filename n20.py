@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 
-
+'''
+Провести статистический анализ одномерных данных.
+'''
 
 def main():
     # Данные выборки
@@ -121,3 +123,6 @@ def main():
     for alpha in alpha_levels:
         lower, upper = confidence_interval(mean_estimate, std_dev_estimate, n, alpha)
         print(f'Доверительный интервал для α={alpha}: ({lower:.2f}, {upper:.2f})')
+
+
+main()

@@ -12,13 +12,14 @@ data = np.array([63.5, 69.8, 64.7, 70.8, 77.5, 82.1, 86.1, 83.3, 85.9, 69.8,
                  69.8, 70.8, 82.1, 86.1, 75.3])
 def main(data=data):
     value_counts = pd.Series(data).value_counts().sort_index()
+    print(max(data) - min(data))
     discrete_variation_series = value_counts.reset_index()
     discrete_variation_series.columns = ['Значение', 'Частота']
 
     print("Дискретный вариационный ряд:")
     print(discrete_variation_series)
 
-    bins = np.arange(60, 90, 5)  
+    bins = np.arange(60, 95, 5)  
     hist, edges = np.histogram(data, bins=bins)
 
     interval_distribution = pd.DataFrame({

@@ -1,10 +1,19 @@
 import numpy as np
 
-# Данные
+"""
+Два студента ответили на пять тестов. Результаты их тестирования таковы:
+Тесты 1 2 3 4 5
+1 студент 8 5 4 7 9
+2 студент 4 6 4 8 5
+На основе рангового коэффициента Спирмена найдите значимость различий в результатах тестирования студентов, рассматривая данные, как выборочные
+наблюдения случайных величин. Сделать выводы
+"""
+
+
 student_1 = [8, 5, 4, 7, 9]
 student_2 = [4, 6, 4, 8, 5]
 
-# Функция для вычисления рангов
+
 def rank(data):
     sorted_data = sorted(data)
     ranks = np.zeros(len(data))
@@ -17,16 +26,16 @@ def rank(data):
     print(f'rank {data} = {ranks}')
     return ranks
 
-# Функция для вычисления статистики Спирмена
+
 def spearman_correlation(student_1, student_2):
     rank_1 = rank(student_1)
     rank_2 = rank(student_2)
     
-    # Вычисляем разности рангoв
+   
     d = rank_1 - rank_2
     d_squared_sum = sum(d_i ** 2 for d_i in d)
     
-    n = len(student_1)  # количество наблюдений
+    n = len(student_1)  
     r_s = 1 - (6 * d_squared_sum) / (n * (n**2 - 1))  # коэффициент рангов Спирмена
 
     return r_s

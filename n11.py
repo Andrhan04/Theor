@@ -1,5 +1,8 @@
 from collections import Counter
 from my_methods import chi_critical, chi_obvervable
+import numpy as np
+from scipy.stats import chi2_contingency, norm
+from math import sqrt
 
 data = [
     35.1, 46.7, 23.9, 50.5, 32.3, 32.5, 32.7, 21.5, 33.1, 34.0, 42.4, 53.6,
@@ -13,46 +16,80 @@ data = [
     39.9, 39.1, 37.5, 41.6
 ]
 
-
+'''
+По данным выборки проверить с помощью критерия Пирсона
+при уровне значимости α гипотезу:
+а) о показательном;
+б) равномерном;
+в) нормальном законе распределения генеральной совокупности.
+В ответе привести:
+1) выбранную гипотезу о виде закона распределения;
+2) вычисленное значение критерия;
+3) критическое значение;
+4) вывод о принятии или не принятии гипотезы
+'''
 
 def main(data = data, alpha = 0.025):
+    a = [[]]
+    q = [0] * 10
+    data = sorted(data)
     counter = Counter(sorted(data))
     data_x = list(counter.keys())
     data_p = list(counter.values())
-
-    n = len(data)
-    chi_obver = chi_obvervable(data_p, data_x)[0]
+    r = max(data) - min(data)
+    print(r)
+    h = r/10
+    print(h)
+    intervals = [[min(data) + r/10*i, min(data) + r/10*(i+1)] for i in range(10)]
+    intervals[-1][1] = intervals[-1][1] + 0.005
+    print(intervals)
+    for i in data:
+        for j in range(len(intervals)):
+            if intervals[j][0] <= i < intervals[j][1]:
+                q[j] += 1
+                break
+    intervals[0] = [5.8, 21.49]
+    intervals.pop(2)
+    intervals.pop(1)
+    q[0] = 13
+    q.pop(2)
+    q.pop(1)
+    intervals[-1] = [47.64, 58.105]
+    intervals.pop(-2)
+    q[-1] = 7
+    q.pop(-2)
+    for i in range(len(q)):
+        print(intervals[i], q[i])
+    X = sum(list(map(lambda x,y: (x[0]+x[1])*y/2, intervals, q))) / sum(q)
+    D = sum(list(map(lambda x,y: (x[0]+x[1])*(x[0]+x[1])*y/4, intervals, q))) / sum(q) - X*X
+    sigma = sqrt(D)
+    print(X, D, sigma)
     
-    k_exp = n - 2
-    k_norm = n - 3
-    k_even = n - 3 
+    a = X - sqrt(3) * sigma
+    b = X + sqrt(3) * sigma
+    print(a, b)
+    fx = 1/(b-a)
     
-    chi_crit_exp = chi_critical(k_exp, alpha)
-    chi_crit_norm = chi_critical(k_norm, alpha)
-    chi_crit_even = chi_critical(k_even, alpha)
+    n = [0] * 7
     
-
+    n[0] = sum(q) * (intervals[0][1] - a) * fx
     
+    for i in range(1, 6):
+        n[i] = sum(q) * (intervals[i][1] - intervals[i][0]) * fx
+        
+    n[-1] = sum(q) * (b - intervals[-1][0]) *fx
     
-    print(f"показательная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_exp:.3f}")
-    if chi_crit_exp < chi_obver:
-        print("гипотеза отвергнута ")
-    else:
-        print("нет оснований отвергать!")
-    print(f"нормальная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_norm:.3f}")
-    if chi_crit_norm < chi_obver:
-        print("гипотеза отвергнута ")
-    else:
-        print("нет оснований отвергать!")
-    print(f"равномерная гипотеза: хи-наблюдаемое: {chi_obver:.3f} хи-критическое: {chi_crit_even:.3f}")
-    if chi_crit_even < chi_obver:
-        print("гипотеза отвергнута ")
-    else:
-        print("нет оснований отвергать!")
+    print(n)
+    
+    for i in range(len(q)):
+        print(intervals[i], q[i])
+    
+    s1 = sum(list(map(lambda x, y: (x-y)*(x-y) / y, q, n)))
+    chi2_crit = chi_critical(len(n) -2 , alpha=alpha)
     
     
     
     
-    
+    print(s1, chi2_crit)
 if __name__ == '__main__':
     main()

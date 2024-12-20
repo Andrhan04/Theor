@@ -3,6 +3,14 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from my_methods import coeff_correlation, regression_equationYX, search_crit_pearson
 
+'''
+ В таблице заданы частоты появлений значений двумерной
+дискретной случайной величины
+(X,Y). При уровне значимости α = 0,05 найти
+коэффициент корреляции, проверить его значимость, найти линейные уравнения
+регрессии Y на X и X на Y. Построить корреляционное поле и на этом же графике
+изобразить обе прямые регрессии.
+'''
 
 
 X = np.array([90.20, 113.0, 100.2, 103.2, 95.15, 108.9, 90.42, 99.51, 89.39, 
@@ -46,4 +54,5 @@ def main(X=X, Y=Y):
     plt.legend()
     plt.grid()
     plt.show()
-    
+
+main()
