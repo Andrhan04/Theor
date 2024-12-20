@@ -18,6 +18,12 @@ def mapping_sq(values_x, a, b, c):
 def mapping_p(values_x, a):
     return a**values_x
 
+def mapping_my(values_x, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11):     
+    return (a0 + a1 * values_x + a2*(values_x**2) + a3*(values_x**3)+ a4*(values_x**4) + a5*(values_x**5)
+            + a6*(values_x**6)+ a7*(values_x**7) + a8*(values_x**8)+ a9*(values_x**9)+ a10*(values_x**10)
+            + a11*(values_x**11)
+    )
+
 x_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0]
 y_data = [1.1, 2.6, 2.7, 3.0, 4.1, 4.6, 4.7, 3.4, 4.8, 5.1, 5.7, 5.2, 5.6]
 def main(xdata = x_data, ydata = y_data):
@@ -57,5 +63,12 @@ def main(xdata = x_data, ydata = y_data):
     print(so)
     plt.plot(xdata, yint, color='black', linestyle='dashed', label='Squeare')
     plt.show()
+    #------------------------------------------------------------------
+    # args, covar = curve_fit(mapping_my,xdata,ydata)
+    # yint=[]
+    # for x in xdata:
+    #     yint.append(mapping_my(x,args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11]))
+    # so = r2_score(y_true=ydata,y_pred=yint)
+    print(so)
 
 main()

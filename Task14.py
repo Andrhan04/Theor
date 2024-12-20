@@ -44,7 +44,7 @@ def main(data_x = x,data_y = y, alpha = 0.01):
     print(t)
     t_crit = Table.getVal(alpha/2,nx+ny-2)
     print(t_crit)
-    print((nx + ny - 2) )
+    print((nx + ny - 2))
     if abs(t) < t_crit:
          print("– нет оснований отвергнуть гипотезу")
     else:
