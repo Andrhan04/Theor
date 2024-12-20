@@ -1,74 +1,66 @@
-'''
-Задание 19. 
-Используя метод наименьших квадратов, найти параметры линейной, квадратичной и показательной зависимостей аппроксимирующей функции. 
-Определить, какая из функций является лучшим приближением зависимости между х и у.
-
-'''
-from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import r2_score
+from numpy.linalg import inv
 
-def mapping(values_x, a, b):     
-    return a*values_x + b
+np.random.seed(0)  
+x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+y = np.array([0.1, 1.5, 2.8, 8.2, 20.2, 55.4, 127.5, 223, 497.6, 980])
+"""
+Используя метод наименьших квадратов, найти параметры линейной, квадратичной и показательной зависимостей аппроксимирующей функции. 
+Определить, какая из функций является лучшим приближением зависимости
+между х и у.
 
-def mapping_sq(values_x, a, b, c):     
-    return a*(values_x**2) + b*(values_x) + c
+"""
+#import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
-def mapping_p(values_x, a):
-    return a**values_x
+# Данные
+x = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0])
+y = np.array([1.1, 2.6, 2.7, 3.0, 4.1, 4.6, 4.7, 3.4, 4.8, 5.1, 5.7, 5.2, 5.6])
 
-def mapping_my(values_x, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11):     
-    return (a0 + a1 * values_x + a2*(values_x**2) + a3*(values_x**3)+ a4*(values_x**4) + a5*(values_x**5)
-            + a6*(values_x**6)+ a7*(values_x**7) + a8*(values_x**8)+ a9*(values_x**9)+ a10*(values_x**10)
-            + a11*(values_x**11)
-    )
+# Определение моделей
+def linear_model(x, a0, a1):
+    return a0 + a1 * x
 
-x_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0]
-y_data = [1.1, 2.6, 2.7, 3.0, 4.1, 4.6, 4.7, 3.4, 4.8, 5.1, 5.7, 5.2, 5.6]
-def main(xdata = x_data, ydata = y_data):
-    plt.figure()
-    plt.plot(xdata, ydata, color='b', label='Data')
-    args, covar = curve_fit(mapping, xdata, ydata) 
-    a=args[0]
-    b=args[1]
-    print(a,b)
-    yint=[]
-    for x in xdata:
-        yint.append(mapping(x,a,b))
-    so = r2_score(y_true=ydata,y_pred=yint)
-    print(so)
-    plt.plot(xdata, yint, color='r', linestyle='dashed', label='Linear')
-    #-----------------------------------------------------------------------------
-    args, covar = curve_fit(mapping_sq, xdata, ydata) 
-    a=args[0]
-    b=args[1]
-    c = args[2]
-    print(a,b,c)
-    yint=[]
-    for x in xdata:
-        yint.append(mapping_sq(x,a,b,c))
-    so = r2_score(y_true=ydata,y_pred=yint)
-    print(so)
-    plt.plot(xdata, yint, color='g', linestyle='dashed', label='Squeare')
-    #-----------------------------------------------------------------------------------------
-    args, covar = curve_fit(mapping_p, xdata, ydata) 
-    a=args[0]
-    print(a)
-    yint=[]
-    for x in xdata:
-        yint.append(mapping_sq(x,a,b,c))
-    so = r2_score(y_true=ydata,y_pred=yint)
-    so = round(so,3)
-    print(so)
-    plt.plot(xdata, yint, color='black', linestyle='dashed', label='Squeare')
-    plt.show()
-    #------------------------------------------------------------------
-    # args, covar = curve_fit(mapping_my,xdata,ydata)
-    # yint=[]
-    # for x in xdata:
-    #     yint.append(mapping_my(x,args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11]))
-    # so = r2_score(y_true=ydata,y_pred=yint)
-    print(so)
+def quadratic_model(x, a0, a1, a2):
+    return a0 + a1 * x + a2 * x**2
 
-main()
+def exponential_model(x, a0, a1):
+    return a0 * np.exp(a1 * x)
+
+# Подбор параметров
+linear_params, _ = curve_fit(linear_model, x, y)
+quadratic_params, _ = curve_fit(quadratic_model, x, y)
+exponential_params, _ = curve_fit(exponential_model, x, y, p0=(1, 0.1))
+
+# Вычисление значений для моделей
+y_linear = linear_model(x, *linear_params)
+y_quadratic = quadratic_model(x, *quadratic_params)
+y_exponential = exponential_model(x, *exponential_params)
+
+# Вычисление R² для каждой модели
+def r_squared(y_true, y_pred):
+    ss_res = np.sum((y_true - y_pred) ** 2)
+    ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
+    return 1 - (ss_res / ss_tot)
+
+r2_linear = r_squared(y, y_linear)
+r2_quadratic = r_squared(y, y_quadratic)
+r2_exponential = r_squared(y, y_exponential)
+
+# Результаты
+print(f"Линейная модель: параметры = {linear_params}, R² = {r2_linear:.4f}")
+print(f"Квадратичная модель: параметры = {quadratic_params}, R² = {r2_quadratic:.4f}")
+print(f"Показательная модель: параметры = {exponential_params}, R² = {r2_exponential:.4f}")
+
+# Визуализация
+plt.scatter(x, y, label='Данные', color='black')
+plt.plot(x, y_linear, label='Линейная модель', color='blue')
+plt.plot(x, y_quadratic, label='Квадратичная модель', color='green')
+plt.plot(x, y_exponential, label='Показательная модель', color='red')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.title('Аппроксимация зависимостей')
+plt.show()

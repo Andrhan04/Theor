@@ -17,6 +17,7 @@ def main(n1 = 500, m1 = 375, n2 = 900, m2 = 557, alpha = 0.06):
     p = (m1+m2)/(n1+n2)
     t = (p1-p2)/sqrt(p*(1-p)*(1/n1+1/n2))
     t_crit = GetParm((1-alpha)/2)
+    print(t, t_crit)
     if abs(t) < t_crit:
          print("– нет оснований отвергнуть гипотезу")
     else:
