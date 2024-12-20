@@ -70,7 +70,7 @@ def GetParm(y):
     for key,val in data.items():
         if(val == y):
             return key
-    return -1
+    return 5
 
 def GetVal(x):
     return data[x]

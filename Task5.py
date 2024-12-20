@@ -18,6 +18,6 @@ def main(data = data, y = 0.95, s = 6):
     x = st.mean(data) 
     print(x)
     Gran = Laplas.GetParm(y/2) * s / sqrt(len(data))
-    print("({:.3f};{:.3f})".format(x-Gran,x+Gran))
+    print("({:.3f}; {:.3f})".format(x-Gran,x+Gran))
 
 main()

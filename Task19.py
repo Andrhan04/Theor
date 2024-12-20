@@ -4,78 +4,58 @@
 Определить, какая из функций является лучшим приближением зависимости между х и у.
 
 '''
+from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy.linalg import inv
-from Function.my_methods import regression_equationYX, coeff_correlation
+from sklearn.metrics import r2_score
 
-np.random.seed(0)  
-x = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0])
-y = np.array([1.1, 2.6, 2.7, 3.0, 4.1, 4.6, 4.7, 3.4, 4.8, 5.1, 5.7, 5.2, 5.6])
+def mapping(values_x, a, b):     
+    return a*values_x + b
 
-# Метод для линейной зависимости
-def linear_fit(x, y):
-    a, b = regression_equationYX(x, y)
-    return float(a), float(b)
+def mapping_sq(values_x, a, b, c):     
+    return a*(values_x**2) + b*(values_x) + c
 
-# Метод для квадратичной зависимости
-def quadratic_fit(x, y):
-    A = np.vstack([x**2, x, np.ones(len(x))]).T
-    params = inv(A.T @ A) @ A.T @ y
-    return params
+def mapping_p(values_x, a):
+    return a**values_x
 
-
-def exponential_fit(x, y):
-        
-    log_y = np.log(y)
-    a, b = linear_fit(x, log_y)
-    return a, b
-
-def compute_r_squared(y, y_pred):
-    ss_tot = np.sum((y - np.mean(y)) ** 2)  # Общая сумма квадратов
-    ss_res = np.sum((y - y_pred) ** 2)      # Сумма квадратов ошибок
-    r_squared = 1 - (ss_res / ss_tot)       # Коэффициент детерминации
-    return r_squared
-
-
-def main(x=x, y=y):
-    linear_params = linear_fit(x, y)
-    quadratic_params = quadratic_fit(x, y)
-    exponential_params = exponential_fit(x, y)
-
-    #предсказанные значение
-    y_linear_pred = linear_params[0] * x + linear_params[1]
-    y_quadratic_pred = quadratic_params[0] * x**2 + quadratic_params[1] * x + quadratic_params[2]
-    y_exponential_pred = exponential_params[0] * np.exp((exponential_params[1]) * x)
-
-    # R^2 для каждой модели
-    r2_linear = compute_r_squared(y, y_linear_pred)
-    r2_quadratic = compute_r_squared(y, y_quadratic_pred)
-    r2_exponential = compute_r_squared(y, y_exponential_pred)
-
-    print(f'Линейные параметры: a = {linear_params[0]:.4f}, b = {linear_params[1]:.4f}')
-    print(f'Квадратичные параметры: a = {quadratic_params[0]:.4f}, b = {quadratic_params[1]:.4f}, c = {quadratic_params[2]:.4f}')
-    print(f'Показательные параметры: a = {exponential_params[0]:.4f}, b = {exponential_params[1]:.4f}')
-    print('----')
-    print(r2_linear)
-    print(r2_quadratic)
-    print(r2_exponential)
-    plt.figure(figsize=(12, 8))
-    plt.scatter(x, y, label='Данные', color='black', s=10)
-
-    plt.plot(x, linear_params[0]*x + linear_params[1], 'r-', label='Линейная аппроксимация')
-
-    x_quad = np.linspace(1, 10, 100)
-    plt.plot(x_quad, quadratic_params[0]*x_quad**2 + quadratic_params[1]*x_quad + quadratic_params[2], 'g-', label='Квадратичная аппроксимация')
-
-
-    plt.plot(x, exponential_params[0] * np.exp(exponential_params[1] * x), 'b-', label='Показательная аппроксимация')
-
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Аппроксимация зависимостей')
-    plt.legend()
-    plt.grid()
+x_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0]
+y_data = [1.1, 2.6, 2.7, 3.0, 4.1, 4.6, 4.7, 3.4, 4.8, 5.1, 5.7, 5.2, 5.6]
+def main(xdata = x_data, ydata = y_data):
+    plt.figure()
+    plt.plot(xdata, ydata, color='b', label='Data')
+    args, covar = curve_fit(mapping, xdata, ydata) 
+    a=args[0]
+    b=args[1]
+    print(a,b)
+    yint=[]
+    for x in xdata:
+        yint.append(mapping(x,a,b))
+    so = r2_score(y_true=ydata,y_pred=yint)
+    print(so)
+    plt.plot(xdata, yint, color='r', linestyle='dashed', label='Linear')
+    #-----------------------------------------------------------------------------
+    args, covar = curve_fit(mapping_sq, xdata, ydata) 
+    a=args[0]
+    b=args[1]
+    c = args[2]
+    print(a,b,c)
+    yint=[]
+    for x in xdata:
+        yint.append(mapping_sq(x,a,b,c))
+    so = r2_score(y_true=ydata,y_pred=yint)
+    print(so)
+    plt.plot(xdata, yint, color='g', linestyle='dashed', label='Squeare')
+    #-----------------------------------------------------------------------------------------
+    args, covar = curve_fit(mapping_p, xdata, ydata) 
+    a=args[0]
+    print(a)
+    yint=[]
+    for x in xdata:
+        yint.append(mapping_sq(x,a,b,c))
+    so = r2_score(y_true=ydata,y_pred=yint)
+    so = round(so,3)
+    print(so)
+    plt.plot(xdata, yint, color='black', linestyle='dashed', label='Squeare')
     plt.show()
 
 main()

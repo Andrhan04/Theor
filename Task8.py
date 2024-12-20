@@ -15,7 +15,8 @@ def main(data_p = p ,x_min = 10.1, h = 2.0, alpha= 0.1):
     ch = chi_critical(k, alpha)
     chi_obs = chi_obvervable(data_p=data_p, data_x=data_x, alpha=alpha)
     print(ch)
-    if ch > chi_obs:
+    print(chi_obs)
+    if ch < chi_obs:
         print("гипотеза отвергнута ")
     else:
         print("нет оснований отвергать!")

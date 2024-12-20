@@ -64,10 +64,10 @@ def chi_obvervable(data_p, data_x, alpha):
     n_ = sum(data_p)
     my_mean(data_x=data_x, data_p=data_p)
     X = my_mean(data_x=data_x, data_p=data_p)
-
+    print(X)
     S = my_variance(data_x=data_x, data_p=data_p)
     delta = sqrt(S)
-
+    print(S)
     a_ = X - sqrt(3)*delta
     b_ = X + sqrt(3)*delta
 
