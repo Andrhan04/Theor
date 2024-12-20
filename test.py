@@ -1,53 +1,47 @@
+'''
+
+Для заданного интервального выборочного ряда 
+(начальное значение min x , шаг h)
+проверить гипотезу: закон распределения генеральной совокупности является показательным при уровне значимости
+alpha = 0,05.
+
+
+'''
+from my_methods import F, my_mean, my_variance, chi_critical, chi_obvervable
+import statistics
+from math import sqrt, fabs, e
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
+from scipy.stats import norm, chi2_contingency
+from typing import List, Tuple
 
-# Данные
-x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-y = np.array([0.1, 1.5, 2.8, 8.2, 20.2, 55.4, 127.5, 223, 497.6, 980])
 
-# Определение моделей
-def linear_model(x, a0, a1):
-    return a0 + a1 * x
+alpha = 0.05
+min_x = 0
+h = 0.2
+a0 = min_x
+a1 = min_x + h
 
-def quadratic_model(x, a0, a1, a2):
-    return a0 + a1 * x + a2 * x**2
+data = [156, 101, 57, 32, 14, 9, 11, 1, 2, 1, 1]
+x = [min_x + h * i for i in range(len(data))]
 
-def exponential_model(x, a0, a1):
-    return a0 * np.exp(a1 * x)
 
-# Подбор параметров
-linear_params, _ = curve_fit(linear_model, x, y)
-quadratic_params, _ = curve_fit(quadratic_model, x, y)
-exponential_params, _ = curve_fit(exponential_model, x, y, p0=(1, 0.1))
+X = statistics.mean(data)
 
-# Вычисление значений для моделей
-y_linear = linear_model(x, *linear_params)
-y_quadratic = quadratic_model(x, *quadratic_params)
-y_exponential = exponential_model(x, *exponential_params)
+lamb = 1/X
+n: List[float] = []
+for i in range(len(x) - 1):
+    Pi = sum(data) * (e**(-lamb*x[i])- e**(-lamb*x[i+1]))
+    n.append(data[i] * Pi)
+    
+print(n)
 
-# Вычисление R² для каждой модели
-def r_squared(y_true, y_pred):
-    ss_res = np.sum((y_true - y_pred) ** 2)
-    ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
-    return 1 - (ss_res / ss_tot)
 
-r2_linear = r_squared(y, y_linear)
-r2_quadratic = r_squared(y, y_quadratic)
-r2_exponential = r_squared(y, y_exponential)
+chi: float = sum(list(map(lambda n1, n2: (n1 - n2)**2 / n2, data, n)))
+chi_crit: float = 15.5 # по таблице приложения два
+print(chi)
 
-# Результаты
-print(f"Линейная модель: параметры = {linear_params}, R² = {r2_linear:.4f}")
-print(f"Квадратичная модель: параметры = {quadratic_params}, R² = {r2_quadratic:.4f}")
-print(f"Показательная модель: параметры = {exponential_params}, R² = {r2_exponential:.4f}")
-
-# Визуализация
-plt.scatter(x, y, label='Данные', color='red')
-plt.plot(x, y_linear, label='Линейная модель', color='blue')
-plt.plot(x, y_quadratic, label='Квадратичная модель', color='green')
-plt.plot(x, y_exponential, label='Показательная модель', color='orange')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.legend()
-plt.title('Аппроксимация зависимостей')
-plt.show()
+if chi > chi_crit:
+    print('гипотеза о показательном распределении отклоняется')
+    
+else:
+    print('нет оснований отвергать гипотезу ')

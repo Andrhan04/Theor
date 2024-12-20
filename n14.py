@@ -31,21 +31,37 @@ y = [54.5, 71.2, 87.4, 50.3, -4.8, 48.2, 64.2, 61.7, 118.2, 44.8, 81.9, 86.6,
 
 import statistics as st
 from math import sqrt
-from t_crit import getVal
+
+import scipy.stats as stats
 def main(data_x = x,data_y = y, alpha = 0.01):
     X = st.mean(data_x)
-    Sx = sqrt(st.variance(data_x,X))
+    print(X)
     Y = st.mean(data_y)
-    Sy = sqrt(st.variance(data_y,Y))
-    nx = len(data_x)
-    ny = len(data_y)
-    S = sqrt( ((nx-1)*Sx + (ny-1)*Sy)/(nx + ny - 2) )
-    t = (X - Y)/(S * sqrt(1/nx + 1/ny))
-    t_crit = getVal(alpha/2,nx+ny-2)
-    if abs(t) < t_crit:
-         print("– нет оснований отвергнуть гипотезу")
+    print(Y)
+    # Sx = sqrt(st.variance(data_x,X))
+    # Sy = sqrt(st.variance(data_y,Y))
+    # nx = len(data_x)
+    # ny = len(data_y)
+    # S = sqrt( ((nx-1)*Sx + (ny-1)*Sy)/(nx + ny - 2) )
+    # t = (X - Y)/(S * sqrt(1/nx + 1/ny))
+    # print(t)
+    # t_crit = 0.136
+    # print(t_crit)
+    # print((nx + ny - 2))
+    # if abs(t) < t_crit:
+    #      print("– нет оснований отвергнуть гипотезу")
+    # else:
+    #     print("– гипотезу отвергают.")
+    stata, p_val = stats.ttest_ind(a=data_x, b=data_y, equal_var=True)
+    print(stata)
+    print(p_val)
+    if p_val > alpha:
+        print("– нет оснований отвергнуть гипотезу")
     else:
         print("– гипотезу отвергают.")
+
+
+
 
 
 main()

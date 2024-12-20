@@ -40,6 +40,10 @@ def test_exponential(data):
     critical_value = stats.chi2.ppf(1 - alpha, df)
     
     print(f'Показательное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    if chi_squared > critical_value:
+        print('гипотеза о Показательном распределении отвергнута')
+    else:
+        print('нет оснований отвергать гипотезу Показательного распределения')
     return chi_squared, critical_value, chi_squared > critical_value
 
 # 2. Проверка на равномерное распределение
@@ -60,6 +64,10 @@ def test_uniform(data):
     critical_value = stats.chi2.ppf(1 - alpha, df)
     
     print(f'Равномерное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    if chi_squared > critical_value:
+        print('гипотеза о равномерном распределении отвергнута')
+    else:
+        print('нет оснований отвергать гипотезу равномерного распределения')
     return chi_squared, critical_value, chi_squared > critical_value
 
 # 3. Проверка на нормальное распределение
@@ -82,6 +90,10 @@ def test_normal(data):
     critical_value = stats.chi2.ppf(1 - alpha, df)
     
     print(f'Нормальное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    if chi_squared > critical_value:
+        print('гипотеза о нормальном распределении отвергнута')
+    else:
+        print('нет оснований отвергать гипотезу нормального распределения')
     return chi_squared, critical_value, chi_squared > critical_value
 
 # Запуск тестов

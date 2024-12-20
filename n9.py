@@ -11,7 +11,7 @@ from my_methods import F, my_mean, my_variance, chi_critical, chi_obvervable
 import statistics
 from math import sqrt, fabs, e
 import numpy as np
-from scipy.stats import norm, chi2_contingency
+from scipy import stats
 from typing import List, Tuple
 
 
@@ -22,26 +22,28 @@ a0 = min_x
 a1 = min_x + h
 
 data = [156, 101, 57, 32, 14, 9, 11, 1, 2, 1, 1]
-x = [min_x + h * i for i in range(len(data))]
+x = [min_x + h * i for i in range(len(data)+1)]
+data1 = [data[i] * (x[i+1] - x[i]) for i in range(len(x) - 1)]
 
-
-X = statistics.mean(data)
-
-lamb = 1/X
-n: List[float] = []
-for i in range(len(x) - 1):
-    Pi = sum(data) * (e**(-lamb*x[i])- e**(-lamb*x[i+1]))
-    n.append(data[i] * Pi)
+def test_exponential(data):
+    # Определим параметр λ
+    lambda_param = 1 / np.mean(data)
     
-print(n)
-
-
-chi: float = sum(list(map(lambda n1, n2: (n1 - n2)**2 / n2, data, n)))
-chi_crit: float = 15.5 # по таблице приложения два
-print(chi)
-
-if chi > chi_crit:
-    print('гипотеза о показательном распределении отклоняется')
+    # Определение интервального распределения
+    bins = np.histogram_bin_edges(data, bins='auto')
+    observed_freq, _ = np.histogram(data, bins=bins)
     
-else:
-    print('нет оснований отвергать гипотезу ')
+    # Теоретические частоты для показательного распределения
+    expected_freq = len(data) * (np.diff(bins) * lambda_param * np.exp(-lambda_param * bins[:-1]))
+
+    # Вычисляем значение критерия χ²
+    chi_squared = np.sum((observed_freq - expected_freq) ** 2 / expected_freq)
+    
+    # Степени свободы: количество интервалов - 1
+    df = len(observed_freq) - 1
+    critical_value = stats.chi2.ppf(1 - alpha, df)
+    
+    print(f'Показательное распределение: χ² = {chi_squared:.4f}, критическое значение = {critical_value:.4f}')
+    return chi_squared, critical_value, chi_squared > critical_value
+
+test_exponential(data1)

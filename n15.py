@@ -16,7 +16,10 @@ def main(n1 = 500, m1 = 327, n2 = 700, m2 = 403, alpha = 0.01):
     p2 = m2/n2
     p = (m1+m2)/(n1+n2)
     t = (p1-p2)/sqrt(p*(1-p)*(1/n1+1/n2))
-    t_crit = GetParm((1-alpha)/2)
+    print(t)
+    t_crit = GetParm(round((1-alpha)/2, 2))
+    print(1-alpha/2)
+    print(t_crit)
     if abs(t) < t_crit:
          print("– нет оснований отвергнуть гипотезу")
     else:

@@ -25,7 +25,8 @@ def main(data_x = x, data_y = y, alpha = 0.1):
         F = D_x/D_y
     else:
         F = D_y/D_x
-    F_crit = GetCrit(alpha/2,len(data_x),len(data_y))
+    print(alpha/2, len(data_x), len(data_y))
+    F_crit = 2.69 #по таблице приложения 5 
     print(F)
     print(F_crit)
     if(F < F_crit):
